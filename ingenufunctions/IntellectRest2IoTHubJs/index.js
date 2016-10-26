@@ -91,7 +91,7 @@ function executeRequest(sqlRequest,callback) {
         sqlRequest.on('doneInProc', function (rowCount, more, rows) {
             context.log("rowCount: " + rowCount);
             context.log("rows:\n" + JSON.stringify(rows));
-            result.rows = rows;
+            //result.rows = rows;
             context.log("Rows 1: ");
             context.log(rows);   
             connection.close();
