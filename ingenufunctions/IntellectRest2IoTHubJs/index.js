@@ -220,7 +220,7 @@ function getNextUplinks(lastSDU, count, callback) {
 
 function getNextUplinks(lastSDU, count, callback) {
     count = count ? count : 1;
-    var path = "/data/v1/receive/" + lastSdu + "?count=" + count;
+    var path = "/data/v1/receive/" + lastSDU + "?count=" + count;
     var headers = {
         Username: GetEnvironmentVariable("IntellectUsername"),
         Password: GetEnvironmentVariable("IntellectPassword"),
