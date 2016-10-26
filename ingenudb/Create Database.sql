@@ -1,20 +1,20 @@
-if exists(select object_id from sys.objects where type='u' and name='IoTDevices')
+if exists(select object_id from sys.objects where type='u' and name='IoTHubDevices')
   begin
-    print 'Dropping existing dbo.IoTDevices table...'
-    drop table dbo.IoTDevices;
+    print 'Dropping existing dbo.IoTHubDevices table...'
+    drop table dbo.IoTHubDevices;
   end
 go
-print 'Creating dbo.IoTDevices table...'
+print 'Creating dbo.IoTHubDevices table...'
 go
-CREATE TABLE dbo.IoTDevices 
+CREATE TABLE dbo.IoTHubDevices 
 (
   deviceId nvarchar(128) NOT NULL
-    CONSTRAINT PK_IoTDevices_deviceId 
+    CONSTRAINT PK_IoTHubDevices_deviceId 
     PRIMARY KEY CLUSTERED,
   primaryConnectionString nvarchar(512) NOT NULL  
 )
 go
-select * from dbo.IoTDevices;
+select * from dbo.IoTHubDevices;
 go
 /*
 To populate this table:
@@ -26,12 +26,12 @@ To populate this table:
 
 Sample Insert and Query:
 
-insert into dbo.IoTDevices (deviceId,primaryConnectionString) VALUES (
+insert into dbo.IoTHubDevices (deviceId,primaryConnectionString) VALUES (
   'paste your Intellect NodeID / Azure IoT Hub devicId here',
   'paste your Azure IoT Hub primary connection string here'
 );
 go
-select * from dbo.IoTDevices;
+select * from dbo.IoTHubDevices;
 
 */
 go
@@ -53,5 +53,6 @@ CREATE TABLE dbo.LastSDUs
 go
 select * from dbo.LastSDUs;
 go
+
 
 

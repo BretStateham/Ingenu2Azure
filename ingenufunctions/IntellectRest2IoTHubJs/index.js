@@ -72,6 +72,8 @@ function runQuery(query) {
 
         sqlRequest.on('doneInProc', function (rowCount, more, rows) {
             result.rows = rows;
+            context.log(JSON.stringify(rows));
+            context.log(JSON.stringify(result));
             // context.log('doneInProc: ' + rowCount + ' rows returned');
             // context.log(rows.length);
             // rows.forEach(function (row) {
@@ -106,6 +108,7 @@ function GetEnvironmentVariable(name) {
 // ----------------------------------------------------------------------
 module.exports = function (ctx, timerTrigger) {
 
+    //store function's context in module level variable.
     context = ctx;
 
     var timeStamp = new Date().toISOString();
