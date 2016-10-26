@@ -73,9 +73,13 @@ function runQuery(query) {
                 }
             });
 
+        sqlRequest.on('row',function(columns){
+            context.log(columns);
+        })
+
         sqlRequest.on('doneInProc', function (rowCount, more, rows) {
             context.log("Rows returned: " + rowCount);
-            context.log("gows:");
+            context.log("rows:");
             context.log(rows);
             result.rows = rows;
             context.log(JSON.stringify(rows));
