@@ -90,7 +90,8 @@ function getLastSDU(readerId, callback) {
 
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
 function saveLastSDU(readerId, lastSDU, callback) {
-    var query = "INSERT INTO lastSDUs (readerId,lastSDU) VALUES (@readerId,@lastSDU)";
+    //var query = "INSERT INTO lastSDUs (readerId,lastSDU) VALUES (@readerId,@lastSDU)";
+    var query = "UPDATE dbo.lastSDUs SET lastSDU = @lastSDU WHERE readerId = @readerId;"
     var sqlRequest = new Request(query,
         function (err) {
             if (err) {

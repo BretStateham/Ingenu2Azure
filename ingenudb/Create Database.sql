@@ -48,7 +48,8 @@ CREATE TABLE dbo.LastSDUs
   readerId nvarchar(128) NOT NULL
     CONSTRAINT PK_LastSDUs_readerId
     PRIMARY KEY CLUSTERED,
-  lastSDU nvarchar(512) NOT NULL  
+  lastSDU nvarchar(512) NOT NULL,
+  lastModified timestamp NOT NULL
 )
 go
 select * from dbo.LastSDUs;
