@@ -40,7 +40,7 @@ var sqlConfig = {
 
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
 function getDeviceConnectionStringFromSQL(deviceId) {
-    var query = "SELECT primaryConnectionString from dbo.IoTHubDevices WHERE deviceId = " + deviceId;
+    var query = "SELECT primaryConnectionString from dbo.IoTHubDevices WHERE deviceId = '" + deviceId + "'";
     var result = runQuery(query);
     context.log("Result: ");
     context.log(result);
