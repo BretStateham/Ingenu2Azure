@@ -93,7 +93,7 @@ function getLastSDU(readerId, callback) {
 
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
 function saveLastSDU(readerId, lastSDU, callback) {
-    //var query = "INSERT INTO lastSDUs (readerId,lastSDU) VALUES (@readerId,@lastSDU)";
+    context.log(readerId + " is saving the lastSDU: " + lastSDU);
     var query = "UPDATE dbo.lastSDUs SET lastSDU = @lastSDU WHERE readerId = @readerId;"
     var sqlRequest = new Request(query,
         function (err) {
@@ -111,7 +111,6 @@ function saveLastSDU(readerId, lastSDU, callback) {
             return null;
         }
         //var lastSDU = rows[0][0].value;
-        context.log("saveLastSDU rows: " + rows);
         sqlRequest = null;
         callback(err);
     });
@@ -141,85 +140,11 @@ function executeRequest(sqlRequest, callback) {
     });
 }
 
-function runQuery(query) {
-    var result = {};
-
-    context.log("Running query:");
-    context.log(query);
-
-    var connection = new Connection(sqlConfig);
-    connection.on('connect', function (err) {
-
-        if (err) {
-            context.log("There was an error connecting to the database: " + err);
-            result.error = err;
-            return result;
-        }
-        // If no error, then good to proceed.  
-        context.log("Connected to sql database");
-
-        var sqlRequest = new Request(query,
-            function (err) {
-                if (err) {
-                    context.log('An error occurred when executing the sql request:\n' + err);
-                    result.error = err;
-                    return result;
-                }
-            });
-
-        sqlRequest.on('doneInProc', function (rowCount, more, rows) {
-            result.rows = rows;
-            connection.close();
-            return result;
-        });
-
-        connection.execSql(sqlRequest);
-
-    });
-}
 
 /** Retrieve an Environment Variable */
 function GetEnvironmentVariable(name) {
     return process.env[name];
 }
-
-// function getNextUplinks(lastSDU, count, callback) {
-//     uplinks = {
-//         uplinks: [
-//             {
-//                 messageId: "123",
-//                 messageType: "DatagramUplinkEvent",
-//                 datagramUplinkEvent: {
-//                     nodeId: "0x00072d97",
-//                     applicationId: 24,
-//                     timestamp: 1477518016135,
-//                     payload: "Bw0ACjc4LjgwXzE4LjAwAA=="
-//                 }
-//             }
-//         ]
-//     };
-//     var result = (uplinks.uplinks) ? uplinks.uplinks : null;
-//     callback(result);
-// }
-
-// function getNextUplinks(lastSDU, count, callback) {
-//     uplinks = {
-//         uplinks: [
-//             {
-//                 messageId: "123",
-//                 messageType: "DatagramUplinkEvent",
-//                 datagramUplinkEvent: {
-//                     nodeId: "0x00072d97",
-//                     applicationId: 24,
-//                     timestamp: 1477518016135,
-//                     payload: "Bw0ACjc4LjgwXzE4LjAwAA=="
-//                 }
-//             }
-//         ]
-//     };
-//     var result = (uplinks.uplinks) ? uplinks.uplinks : null;
-//     callback(result);
-// }
 
 function getNextUplinks(lastSDU, count, callback) {
     count = count ? count : 1;
@@ -288,32 +213,33 @@ module.exports = function (ctx, timerTrigger) {
 
                 for(var u = 0; u < uplinks.length; u++){
 
-                    // Get the messageId, and save it as the lastSDU processed.
-                    // Really, I shouldn't do this until I know I've processed it, but
-                    // putting it here makes sure it gets done, even if it means 
-                    // failed messages don't get re-processed...
-                    lastSDU = u.messageId;
-                    saveLastSDU(readerId,lastSDU,function(err){
-                        if(err){
-                            context.log('There was an issue saving the lastSDU back to the database');
-                        }
-                        context.log('Saved lastSDU');
-                    });
-
                     var uplink = uplinks[u];
                     context.log("messageType: " + uplink.messageType);
-
-                    if(uplink.messageType == "DatagramUplinkEvent"){
-
-                        var datagramUplinkEvent = uplink.datagramUplinkEvent;
-
-                        context.log("nodeId: " + datagramUplinkEvent.nodeId);
-                        context.log("payload: " + datagramUplinkEvent.payload );
-                        var deviceId = datagramUplinkEvent.nodeId;
-
-                        getDeviceConnectionStringFromSQL(deviceId, function (iotHubConString) {
-                            context.log("iotHubConString: " + iotHubConString);
+                    if(uplink){
+                        // Get the messageId, and save it as the lastSDU processed.
+                        // Really, I shouldn't do this until I know I've processed it, but
+                        // putting it here makes sure it gets done, even if it means 
+                        // failed messages don't get re-processed...
+                        lastSDU = uplink.messageId;
+                        saveLastSDU(readerId,lastSDU,function(err){
+                            if(err){
+                                context.log('There was an issue saving the lastSDU back to the database');
+                            }
+                            context.log('Saved lastSDU');
                         });
+
+                        if(uplink.messageType == "DatagramUplinkEvent"){
+
+                            var datagramUplinkEvent = uplink.datagramUplinkEvent;
+
+                            context.log("nodeId: " + datagramUplinkEvent.nodeId);
+                            context.log("payload: " + datagramUplinkEvent.payload );
+                            var deviceId = datagramUplinkEvent.nodeId;
+
+                            getDeviceConnectionStringFromSQL(deviceId, function (iotHubConString) {
+                                context.log("iotHubConString: " + iotHubConString);
+                            });
+                        }
                     }
                 }
             }
