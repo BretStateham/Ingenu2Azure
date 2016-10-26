@@ -222,7 +222,7 @@ module.exports = function (ctx, timerTrigger) {
                 var uplink = uplinks[u];
                 context.log("messageType: " + uplink.messageType);
 
-                if(messageType == "DatagramUplinkEvent"){
+                if(uplink.messageType == "DatagramUplinkEvent"){
 
                     var datagramUplinkEvent = uplink.datagramUplinkEvent;
 
