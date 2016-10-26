@@ -29,12 +29,24 @@ var sqlConfig = {
     options: {encrypt: true, database: 'ingenudb'}
 };
 
+// ----------------------------------------------------------------------
+// Functions
+// ----------------------------------------------------------------------
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
 function getDeviceConnectionStringFromSQL(deviceId){
 
 }
 
+/** Retrieve an Environment Variable */
+function GetEnvironmentVariable(name)
+{
+    return process.env[name];
+}
 
+
+// ----------------------------------------------------------------------
+// Main
+// ----------------------------------------------------------------------
 module.exports = function (context, timerTrigger) {
     
     var timeStamp = new Date().toISOString();
@@ -43,6 +55,9 @@ module.exports = function (context, timerTrigger) {
     {
         context.log('Node.js is running late!');
     }
+    
+    var sqlServer = GetEnvironmentVariable("SqlServer");
+    context.log("SqlServer Environment Variable: " + sqlServer);
     context.log("sqlConfig:");
     context.log(JSON.stringify(sqlConfig));
 
