@@ -58,6 +58,7 @@ function getDeviceConnectionStringFromSQL(deviceId) {
             return null;
         }
         var primaryConnectionString = rows[0][0].value;
+        context.log("primaryConnectionString: " + primaryConnectionString);
         sqlRequest = null;
         return primaryConnectionString;
     });
@@ -81,6 +82,7 @@ function getLastSDU(readerId) {
             return null;
         }
         var lastSDU = rows[0][0].value;
+        context.log("lastSDU: " + lastSDU);
         sqlRequest = null;
         return lastSDU;
     });
