@@ -106,10 +106,10 @@ function saveLastSDU(readerId, lastSDU, callback) {
             context.log('There was an error saving the last SDU:\n' + err);
             return null;
         }
-        var lastSDU = rows[0][0].value;
-        context.log("lastSDU: " + lastSDU);
+        //var lastSDU = rows[0][0].value;
+        context.log("saveLastSDU rows: " + rows);
         sqlRequest = null;
-        callback(lastSDU);
+        callback(err);
     });
 }
 
@@ -236,8 +236,11 @@ module.exports = function (ctx, timerTrigger) {
                 }
             }
 
-            saveLastSDU(readerId,lastSDU,function(){
-                context.log('Saved lastSDU: ' + lastSDU);
+            saveLastSDU(readerId,lastSDU,function(err){
+                if(error){
+                    context.log('There was an issue saving the lastSDU back to the database');
+                }
+                context.log('Saved lastSDU');
             });
         });
     });
