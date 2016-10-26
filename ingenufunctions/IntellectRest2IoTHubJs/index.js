@@ -19,8 +19,10 @@ var Connection = require('tedious').Connection;
 // sqlConfig stores the SQL Database Connection Details
 // TODO: Move username and password info out into secure config 
 var sqlConfig = {
+    userName: GetEnvironmentVariable("SqlLogin"),  
+    password: GetEnvironmentVariable("SqlPassword"),  
     server: GetEnvironmentVariable("SqlServer"),
-    options: {encrypt: true, database: 'ingenudb'}
+    options: {encrypt: true, database: GetEnvironmentVariable("SqlDb")}
 };
 
 // ----------------------------------------------------------------------
