@@ -37,9 +37,10 @@ var sqlConfig = {
 
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
 function getDeviceConnectionStringFromSQL(deviceId) {
-    var result = runQuery("SELECT primaryConnectionString from dbo.IoTHubDevices WHERE deviceId = " + deviceId);
-    console.log("Result: ");
-    console.log(result);
+    var query = "SELECT primaryConnectionString from dbo.IoTHubDevices WHERE deviceId = " + deviceId;
+    var result = runQuery(query);
+    context.log("Result: ");
+    context.log(result);
     return result;
 }
 
@@ -55,12 +56,12 @@ function runQuery(query) {
             return result;
         }
         // If no error, then good to proceed.  
-        console.log("Connected to sql database");
+        context.log("Connected to sql database");
 
         var sqlRequest = new Request(query,
             function (err) {
                 if (err) {
-                    console.log('An error occurred when executing the sql request:\n' + err);
+                    context.log('An error occurred when executing the sql request:\n' + err);
                     result.error = err;
                     return result;
                 }
@@ -68,17 +69,17 @@ function runQuery(query) {
 
         sqlRequest.on('doneInProc', function (rowCount, more, rows) {
             result.rows = rows;
-            // console.log('doneInProc: ' + rowCount + ' rows returned');
-            // console.log(rows.length);
+            // context.log('doneInProc: ' + rowCount + ' rows returned');
+            // context.log(rows.length);
             // rows.forEach(function (row) {
             //     row.forEach(function (column) {
             //         if (column.value === null) {
-            //             console.log('NULL');
+            //             context.log('NULL');
             //         } else {
             //             result += column.value + " ";
             //         }
             //     });
-            //     console.log(result);
+            //     context.log(result);
             //     result = "";
             // });
             connection.close();
