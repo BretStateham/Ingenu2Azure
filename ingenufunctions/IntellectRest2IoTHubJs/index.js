@@ -237,7 +237,7 @@ module.exports = function (ctx, timerTrigger) {
             }
 
             saveLastSDU(readerId,lastSDU,function(err){
-                if(error){
+                if(err){
                     context.log('There was an issue saving the lastSDU back to the database');
                 }
                 context.log('Saved lastSDU');
