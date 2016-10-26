@@ -58,16 +58,24 @@ function getDeviceConnectionStringFromSQL(deviceId) {
             }
         });
     sqlRequest.addParameter("deviceId",TYPES.NVarChar,deviceId)
-    var result = executeRequest(sqlRequest);
-    context.log("Result 2: ");
-    context.log(result);    
-    //sqlRequest = null;
-    return result;
+    executeRequest(sqlRequest,function(err,rowCount,rows){
+        if(err){
+            context.log('There was an error retrieving the IoT Hub Device ID:\n' + err);
+            return null;
+        }
+        context.log("Rows 2: ");
+        context.log(rows);  
+        var primaryConnectionString = rows[0][0].value;
+        context.log("Primary Connection String:\n"+ primaryConnectionString);
+        sqlRequest = null;
+        return rows;
+    });
+
     
 }
 
-function executeRequest(sqlRequest) {
-    var result = {};
+function executeRequest(sqlRequest,callback) {
+    //var result = {};
 
     var connection = new Connection(sqlConfig);
     connection.on('connect', function (err) {
@@ -75,7 +83,7 @@ function executeRequest(sqlRequest) {
         if (err) {
             context.log("There was an error connecting to the database: " + err);
             result.error = err;
-            return result;
+            callback(err,null,null);
         }
         // If no error, then good to proceed.  
         context.log("Connected to sql database");
@@ -84,10 +92,10 @@ function executeRequest(sqlRequest) {
             context.log("rowCount: " + rowCount);
             context.log("rows:\n" + JSON.stringify(rows));
             result.rows = rows;
-            context.log("Result 1: ");
-            context.log(result);   
+            context.log("Rows 1: ");
+            context.log(rows);   
             connection.close();
-            return result;
+            callback(null,rowCount,rows);
         });
 
         connection.execSql(sqlRequest);
