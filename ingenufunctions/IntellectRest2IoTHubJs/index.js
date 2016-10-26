@@ -24,9 +24,7 @@ var TYPES = require('tedious').TYPES;
 var context;  //This will be a reference to the function's context
 
 
-/** sqlConfig stores the SQL Database Connection Details 
-  TODO: Move username and password info out into secure config
-*/
+/** sqlConfig stores the SQL Database Connection Details */
 var sqlConfig = {
     userName: GetEnvironmentVariable("SqlLogin"),
     password: GetEnvironmentVariable("SqlPassword"),
@@ -77,31 +75,9 @@ function runQuery(query) {
                 }
             });
 
-        sqlRequest.on('row',function(columns){
-            context.log(columns);
-        })
-
         sqlRequest.on('doneInProc', function (rowCount, more, rows) {
-            context.log("Rows returned: " + rowCount);
-            context.log("rows:");
-            context.log(rows);
             result.rows = rows;
-            context.log(JSON.stringify(rows));
-            context.log(JSON.stringify(result));
-            // context.log('doneInProc: ' + rowCount + ' rows returned');
-            // context.log(rows.length);
-            // rows.forEach(function (row) {
-            //     row.forEach(function (column) {
-            //         if (column.value === null) {
-            //             context.log('NULL');
-            //         } else {
-            //             result += column.value + " ";
-            //         }
-            //     });
-            //     context.log(result);
-            //     result = "";
-            // });
-            //connection.close();
+            connection.close();
             return result;
         });
 
