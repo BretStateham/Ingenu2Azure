@@ -57,6 +57,7 @@ function getDeviceConnectionStringFromSQL(deviceId) {
                 return result;
             }
         });
+    request.addParameter("deviceId",TYPES.NVarChar,deviceId)
     var result = executeRequest(sqlRequest);
     context.log("Result: ");
     context.log(result);    
@@ -66,9 +67,6 @@ function getDeviceConnectionStringFromSQL(deviceId) {
 
 function executeRequest(sqlRequest) {
     var result = {};
-
-    context.log("Running query:");
-    context.log(query);
 
     var connection = new Connection(sqlConfig);
     connection.on('connect', function (err) {
