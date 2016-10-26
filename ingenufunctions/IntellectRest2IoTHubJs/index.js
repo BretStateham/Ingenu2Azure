@@ -106,7 +106,7 @@ function GetEnvironmentVariable(name) {
 // ----------------------------------------------------------------------
 module.exports = function (ctx, timerTrigger) {
 
-    this.context = ctx;
+    context = ctx;
 
     var timeStamp = new Date().toISOString();
 
