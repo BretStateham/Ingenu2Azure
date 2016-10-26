@@ -21,7 +21,7 @@ var TYPES = require('tedious').TYPES;
 // Module level declarations
 // ----------------------------------------------------------------------
 
-var context = {};  //This will be a reference to the function's context
+var context;  //This will be a reference to the function's context
 
 
 /** sqlConfig stores the SQL Database Connection Details 
