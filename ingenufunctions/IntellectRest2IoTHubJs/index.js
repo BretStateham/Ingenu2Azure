@@ -75,6 +75,8 @@ function runQuery(query) {
 
         sqlRequest.on('doneInProc', function (rowCount, more, rows) {
             context.log("Rows returned: " + rowCount);
+            context.log("gows:");
+            context.log(rows);
             result.rows = rows;
             context.log(JSON.stringify(rows));
             context.log(JSON.stringify(result));
