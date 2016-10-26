@@ -42,12 +42,6 @@ var sqlConfig = {
 
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
 function getDeviceConnectionStringFromSQL(deviceId) {
-    // var query = "SELECT primaryConnectionString from dbo.IoTHubDevices WHERE deviceId = '" + deviceId + "'";
-    // var result = runQuery(query);
-    // context.log("Result: ");
-    // context.log(result);
-    // return result;
-
     var query = "SELECT primaryConnectionString from dbo.IoTHubDevices WHERE deviceId = @deviceId";
     var sqlRequest = new Request(query,
         function (err) {
@@ -63,15 +57,33 @@ function getDeviceConnectionStringFromSQL(deviceId) {
             context.log('There was an error retrieving the IoT Hub Device ID:\n' + err);
             return null;
         }
-        context.log("Rows 2: ");
-        context.log(rows);  
         var primaryConnectionString = rows[0][0].value;
-        context.log("Primary Connection String:\n"+ primaryConnectionString);
         sqlRequest = null;
-        return rows;
+        return primaryConnectionString;
     });
+}
 
-    
+/** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
+function getLastSDU(readerId) {
+    var query = "SELECT lastSDU from dbo.lastSDUs WHERE readerId = @readerId";
+    var sqlRequest = new Request(query,
+        function (err) {
+            if (err) {
+                context.log('An error occurred when executing the sql request:\n' + err);
+                result.error = err;
+                return result;
+            }
+        });
+    sqlRequest.addParameter("readerId",TYPES.NVarChar,readerId)
+    executeRequest(sqlRequest,function(err,rowCount,rows){
+        if(err){
+            context.log('There was an error retrieving the last SDU:\n' + err);
+            return null;
+        }
+        var lastSDU = rows[0][0].value;
+        sqlRequest = null;
+        return lastSDU;
+    });
 }
 
 function executeRequest(sqlRequest,callback) {
@@ -82,18 +94,12 @@ function executeRequest(sqlRequest,callback) {
 
         if (err) {
             context.log("There was an error connecting to the database: " + err);
-            result.error = err;
             callback(err,null,null);
         }
         // If no error, then good to proceed.  
         context.log("Connected to sql database");
 
         sqlRequest.on('doneInProc', function (rowCount, more, rows) {
-            context.log("rowCount: " + rowCount);
-            context.log("rows:\n" + JSON.stringify(rows));
-            //result.rows = rows;
-            context.log("Rows 1: ");
-            context.log(rows);   
             connection.close();
             callback(null,rowCount,rows);
         });
@@ -168,6 +174,10 @@ module.exports = function (ctx, timerTrigger) {
     context.log("Retrieving device connection string:");
     var iotHubConString = getDeviceConnectionStringFromSQL("0x00072d97")
     context.log("IoT Hub Device Connection String:\n" + iotHubConString);
+
+    context.log("Retrieving last SDU:");
+    var lastSDU = getLastSDU("IntellectRest2IoTHubJs")
+    context.log("last SDU:\n" + lastSDU);    
 
     context.log('Node.js timer trigger function ran!', timeStamp);
 
