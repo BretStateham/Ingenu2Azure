@@ -245,7 +245,7 @@ function getNextUplinks(lastSDU, count, callback) {
         });
 
         res.on('end', function () {
-            callback(data);
+            callback(JSON.parse(data);
         })
     });
 
