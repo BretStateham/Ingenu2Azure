@@ -228,13 +228,21 @@ module.exports = function (ctx, timerTrigger) {
                             context.log('Saved lastSDU');
                         });
 
+
                         if(uplink.messageType == "DatagramUplinkEvent"){
 
                             var datagramUplinkEvent = uplink.datagramUplinkEvent;
 
+                            var timestamp = datagramUplinkEvent.timestamp;
+                            var timestampDate = new Date(timestamp);
+                            context.log("timestamp: " + timestamp);
+                            context.log("timestampDate: " + timestampDate);
+
                             context.log("nodeId: " + datagramUplinkEvent.nodeId);
                             context.log("payload: " + datagramUplinkEvent.payload );
                             var deviceId = datagramUplinkEvent.nodeId;
+
+                            
 
                             getDeviceConnectionStringFromSQL(deviceId, function (iotHubConString) {
                                 context.log("iotHubConString: " + iotHubConString);
