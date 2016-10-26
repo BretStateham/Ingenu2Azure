@@ -166,7 +166,8 @@ module.exports = function (ctx, timerTrigger) {
     context.log(JSON.stringify(sqlConfig));
 
     context.log("Retrieving device connection string:");
-    getDeviceConnectionStringFromSQL("0x00072d97")
+    var iotHubConString = getDeviceConnectionStringFromSQL("0x00072d97")
+    context.log("IoT Hub Device Connection String:\n" + iotHubConString);
 
     context.log('Node.js timer trigger function ran!', timeStamp);
 
