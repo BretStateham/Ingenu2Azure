@@ -8,16 +8,20 @@
 // ----------------------------------------------------------------------
 // Requires
 // ----------------------------------------------------------------------
-// Tedious is used to connect to the Azure SQL Database: 
-// GitHub: https://github.com/tediousjs/tedious
-// NPM:    https://www.npmjs.com/package/tedious
+
+/** tedious is used to connect to the Azure SQL Database: 
+  GitHub: https://github.com/tediousjs/tedious
+  NPM:    https://www.npmjs.com/package/tedious
+*/
 var Connection = require('tedious').Connection; 
 
 // ----------------------------------------------------------------------
 // Module level declarations
 // ----------------------------------------------------------------------
-// sqlConfig stores the SQL Database Connection Details
-// TODO: Move username and password info out into secure config 
+
+/** sqlConfig stores the SQL Database Connection Details 
+  TODO: Move username and password info out into secure config
+*/ 
 var sqlConfig = {
     userName: GetEnvironmentVariable("SqlLogin"),  
     password: GetEnvironmentVariable("SqlPassword"),  
@@ -28,6 +32,7 @@ var sqlConfig = {
 // ----------------------------------------------------------------------
 // Functions
 // ----------------------------------------------------------------------
+
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
 function getDeviceConnectionStringFromSQL(deviceId){
 
