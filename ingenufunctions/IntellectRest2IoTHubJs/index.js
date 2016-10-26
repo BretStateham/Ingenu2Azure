@@ -97,7 +97,7 @@ function runQuery(query) {
             //     context.log(result);
             //     result = "";
             // });
-            connection.close();
+            //connection.close();
             return result;
         });
 
