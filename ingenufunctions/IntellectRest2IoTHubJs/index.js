@@ -41,7 +41,7 @@ var sqlConfig = {
 // ----------------------------------------------------------------------
 
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
-function getDeviceConnectionStringFromSQL(deviceId) {
+function getDeviceConnectionStringFromSQL(deviceId,callback) {
     var query = "SELECT primaryConnectionString from dbo.IoTHubDevices WHERE deviceId = @deviceId";
     var sqlRequest = new Request(query,
         function (err) {
@@ -60,12 +60,12 @@ function getDeviceConnectionStringFromSQL(deviceId) {
         var primaryConnectionString = rows[0][0].value;
         context.log("primaryConnectionString: " + primaryConnectionString);
         sqlRequest = null;
-        return primaryConnectionString;
+        callback(primaryConnectionString);
     });
 }
 
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
-function getLastSDU(readerId) {
+function getLastSDU(readerId,callback) {
     var query = "SELECT lastSDU from dbo.lastSDUs WHERE readerId = @readerId";
     var sqlRequest = new Request(query,
         function (err) {
@@ -84,7 +84,7 @@ function getLastSDU(readerId) {
         var lastSDU = rows[0][0].value;
         context.log("lastSDU: " + lastSDU);
         sqlRequest = null;
-        return lastSDU;
+        callback(lastSDU);
     });
 }
 
@@ -168,18 +168,12 @@ module.exports = function (ctx, timerTrigger) {
         context.log('Node.js is running late!');
     }
 
-    var sqlServer = GetEnvironmentVariable("SqlServer");
-    context.log("SqlServer Environment Variable: " + sqlServer);
-    context.log("sqlConfig:");
-    context.log(JSON.stringify(sqlConfig));
-
-    context.log("Retrieving device connection string:");
-    var iotHubConString = getDeviceConnectionStringFromSQL("0x00072d97")
-    context.log("IoT Hub Device Connection String:\n" + iotHubConString);
-
-    context.log("Retrieving last SDU:");
-    var lastSDU = getLastSDU("IntellectRest2IoTHubJs")
-    context.log("last SDU:\n" + lastSDU);    
+    getLastSDU("IntellectRest2IoTHubJs",function(lastSDU){
+        getDeviceConnectionStringFromSQL("0x00072d97", function(iotHubConString){
+            context.log("lastSDU: " + lastSDU);
+            context.log("iotHubConString: " + iotHubConString);
+        });
+    });
 
     context.log('Node.js timer trigger function ran!', timeStamp);
 
