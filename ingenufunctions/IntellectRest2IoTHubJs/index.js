@@ -31,7 +31,11 @@ var sqlConfig = {
     userName: GetEnvironmentVariable("SqlLogin"),
     password: GetEnvironmentVariable("SqlPassword"),
     server: GetEnvironmentVariable("SqlServer"),
-    options: { encrypt: true, database: GetEnvironmentVariable("SqlDb") }
+    options: { 
+        encrypt: true,
+        rowCollectionOnDone: true, 
+        database: GetEnvironmentVariable("SqlDb") 
+    }
 };
 
 // ----------------------------------------------------------------------
