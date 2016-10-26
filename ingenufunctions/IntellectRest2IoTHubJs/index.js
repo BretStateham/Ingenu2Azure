@@ -288,6 +288,18 @@ module.exports = function (ctx, timerTrigger) {
 
                 for(var u = 0; u < uplinks.length; u++){
 
+                    // Get the messageId, and save it as the lastSDU processed.
+                    // Really, I shouldn't do this until I know I've processed it, but
+                    // putting it here makes sure it gets done, even if it means 
+                    // failed messages don't get re-processed...
+                    lastSDU = u.messageId;
+                    saveLastSDU(readerId,lastSDU,function(err){
+                        if(err){
+                            context.log('There was an issue saving the lastSDU back to the database');
+                        }
+                        context.log('Saved lastSDU');
+                    });
+
                     var uplink = uplinks[u];
                     context.log("messageType: " + uplink.messageType);
 
@@ -304,14 +316,6 @@ module.exports = function (ctx, timerTrigger) {
                         });
                     }
                 }
-
-                saveLastSDU(readerId,lastSDU,function(err){
-                    if(err){
-                        context.log('There was an issue saving the lastSDU back to the database');
-                    }
-                    context.log('Saved lastSDU');
-                });
-
             }
         });
     });
