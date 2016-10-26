@@ -42,11 +42,54 @@ var sqlConfig = {
 
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
 function getDeviceConnectionStringFromSQL(deviceId) {
-    var query = "SELECT primaryConnectionString from dbo.IoTHubDevices WHERE deviceId = '" + deviceId + "'";
-    var result = runQuery(query);
+    // var query = "SELECT primaryConnectionString from dbo.IoTHubDevices WHERE deviceId = '" + deviceId + "'";
+    // var result = runQuery(query);
+    // context.log("Result: ");
+    // context.log(result);
+    // return result;
+
+    var query = "SELECT primaryConnectionString from dbo.IoTHubDevices WHERE deviceId = @deviceId";
+    var sqlRequest = new Request(query,
+        function (err) {
+            if (err) {
+                context.log('An error occurred when executing the sql request:\n' + err);
+                result.error = err;
+                return result;
+            }
+        });
+    var result = executeRequest(sqlRequest);
     context.log("Result: ");
-    context.log(result);
-    return result;
+    context.log(result);    
+    sqlRequest = null;
+    
+}
+
+function executeRequest(sqlRequest) {
+    var result = {};
+
+    context.log("Running query:");
+    context.log(query);
+
+    var connection = new Connection(sqlConfig);
+    connection.on('connect', function (err) {
+
+        if (err) {
+            context.log("There was an error connecting to the database: " + err);
+            result.error = err;
+            return result;
+        }
+        // If no error, then good to proceed.  
+        context.log("Connected to sql database");
+
+        sqlRequest.on('doneInProc', function (rowCount, more, rows) {
+            result.rows = rows;
+            connection.close();
+            return result;
+        });
+
+        connection.execSql(sqlRequest);
+
+    });
 }
 
 function runQuery(query) {
@@ -84,7 +127,6 @@ function runQuery(query) {
         connection.execSql(sqlRequest);
 
     });
-
 }
 
 /** Retrieve an Environment Variable */
