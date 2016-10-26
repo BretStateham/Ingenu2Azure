@@ -277,6 +277,9 @@ module.exports = function (ctx, timerTrigger) {
 
             context.log("Data Retrieved: ");
             context.log(JSON.stringify(data));
+
+            context.log("Uplinks:");
+            context.log(JSON.stringify(data.uplinks));
             
             context.log("lastSDU: " + lastSDU);
             uplinks = data.uplinks ? data.uplinks : null;
