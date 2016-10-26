@@ -80,6 +80,8 @@ function executeRequest(sqlRequest) {
         context.log("Connected to sql database");
 
         sqlRequest.on('doneInProc', function (rowCount, more, rows) {
+            context.log("rowCount: " + rowCount);
+            context.log("rows:\n" + JSON.stringify(rows));
             result.rows = rows;
             connection.close();
             return result;
