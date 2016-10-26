@@ -21,6 +21,9 @@ var TYPES = require('tedious').TYPES;
 // Module level declarations
 // ----------------------------------------------------------------------
 
+var context = {};  //This will be a reference to the function's context
+
+
 /** sqlConfig stores the SQL Database Connection Details 
   TODO: Move username and password info out into secure config
 */
@@ -101,7 +104,9 @@ function GetEnvironmentVariable(name) {
 // ----------------------------------------------------------------------
 // Main
 // ----------------------------------------------------------------------
-module.exports = function (context, timerTrigger) {
+module.exports = function (ctx, timerTrigger) {
+
+    this.context = ctx;
 
     var timeStamp = new Date().toISOString();
 
