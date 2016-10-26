@@ -112,7 +112,7 @@ module.exports = function (context, timerTrigger) {
     context.log(JSON.stringify(sqlConfig));
 
     context.log("Retrieving device connection string:");
-    getDeviceConnectionStringFromSQL(deviceId)
+    getDeviceConnectionStringFromSQL("0x00072d97")
 
     context.log('Node.js timer trigger function ran!', timeStamp);
 
