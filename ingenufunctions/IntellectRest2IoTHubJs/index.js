@@ -202,24 +202,24 @@ function GetEnvironmentVariable(name) {
 //     callback(result);
 // }
 
-function getNextUplinks(lastSDU, count, callback) {
-    uplinks = {
-        uplinks: [
-            {
-                messageId: "123",
-                messageType: "DatagramUplinkEvent",
-                datagramUplinkEvent: {
-                    nodeId: "0x00072d97",
-                    applicationId: 24,
-                    timestamp: 1477518016135,
-                    payload: "Bw0ACjc4LjgwXzE4LjAwAA=="
-                }
-            }
-        ]
-    };
-    var result = (uplinks.uplinks) ? uplinks.uplinks : null;
-    callback(result);
-}
+// function getNextUplinks(lastSDU, count, callback) {
+//     uplinks = {
+//         uplinks: [
+//             {
+//                 messageId: "123",
+//                 messageType: "DatagramUplinkEvent",
+//                 datagramUplinkEvent: {
+//                     nodeId: "0x00072d97",
+//                     applicationId: 24,
+//                     timestamp: 1477518016135,
+//                     payload: "Bw0ACjc4LjgwXzE4LjAwAA=="
+//                 }
+//             }
+//         ]
+//     };
+//     var result = (uplinks.uplinks) ? uplinks.uplinks : null;
+//     callback(result);
+// }
 
 function getNextUplinks(lastSDU, count, callback) {
     count = count ? count : 1;
@@ -274,6 +274,9 @@ module.exports = function (ctx, timerTrigger) {
 
     getLastSDU(readerId, function (lastSDU) {
         getNextUplinks(lastSDU, 1, function (data) {
+
+            context.log("Data Retrieved: ");
+            context.log(JSON.stringify(data));
             
             context.log("lastSDU: " + lastSDU);
             uplinks = data.uplinks ? data.uplinks : null;
