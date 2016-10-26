@@ -180,6 +180,25 @@ function GetEnvironmentVariable(name) {
     return process.env[name];
 }
 
+// function getNextUplinks(lastSDU, count, callback) {
+//     uplinks = {
+//         uplinks: [
+//             {
+//                 messageId: "123",
+//                 messageType: "DatagramUplinkEvent",
+//                 datagramUplinkEvent: {
+//                     nodeId: "0x00072d97",
+//                     applicationId: 24,
+//                     timestamp: 1477518016135,
+//                     payload: "Bw0ACjc4LjgwXzE4LjAwAA=="
+//                 }
+//             }
+//         ]
+//     };
+//     var result = (uplinks.uplinks) ? uplinks.uplinks : null;
+//     callback(result);
+// }
+
 function getNextUplinks(lastSDU, count, callback) {
     uplinks = {
         uplinks: [
@@ -199,6 +218,41 @@ function getNextUplinks(lastSDU, count, callback) {
     callback(result);
 }
 
+function getNextUplinks(lastSDU, count, callback) {
+    count = count ? count : 1;
+    var path = "/data/v1/receive/" + lastSdu + "?count=" + count;
+    var headers = {
+        Username: GetEnvironmentVariable("IntellectUsername"),
+        Password: GetEnvironmentVariable("IntellectPassword"),
+        Accept: 'application/json'
+    }
+    var options = {
+        host: GetEnvironmentVariable("IntellectHost"),
+        port: 443,
+        path: path,
+        method: "GET",
+        headers: headers
+    };
+
+    var data = '';
+
+    var req = https.request(options, function (res) {
+        res.on('data', function (d) {
+            data += d;
+        });
+
+        res.on('end', function () {
+            callback(data);
+        })
+    });
+
+    req.on('error', function (e) {
+        console.error(e);
+    })
+
+    req.end();
+}
+
 
 // ----------------------------------------------------------------------
 // Main
@@ -216,33 +270,40 @@ module.exports = function (ctx, timerTrigger) {
     }
 
     getLastSDU(readerId, function (lastSDU) {
-        getNextUplinks(lastSDU, 1, function (uplinks) {
+        getNextUplinks(lastSDU, 1, function (data) {
+            
             context.log("lastSDU: " + lastSDU);
-            for(var u = 0; u < uplinks.length; u++){
+            uplinks = data.uplinks ? data.uplinks : null;
 
-                var uplink = uplinks[u];
-                context.log("messageType: " + uplink.messageType);
+            if(uplinks){
 
-                if(uplink.messageType == "DatagramUplinkEvent"){
+                for(var u = 0; u < uplinks.length; u++){
 
-                    var datagramUplinkEvent = uplink.datagramUplinkEvent;
+                    var uplink = uplinks[u];
+                    context.log("messageType: " + uplink.messageType);
 
-                    context.log("nodeId: " + datagramUplinkEvent.nodeId);
-                    context.log("payload: " + datagramUplinkEvent.payload );
-                    var deviceId = datagramUplinkEvent.nodeId;
+                    if(uplink.messageType == "DatagramUplinkEvent"){
 
-                    getDeviceConnectionStringFromSQL(deviceId, function (iotHubConString) {
-                        context.log("iotHubConString: " + iotHubConString);
-                    });
+                        var datagramUplinkEvent = uplink.datagramUplinkEvent;
+
+                        context.log("nodeId: " + datagramUplinkEvent.nodeId);
+                        context.log("payload: " + datagramUplinkEvent.payload );
+                        var deviceId = datagramUplinkEvent.nodeId;
+
+                        getDeviceConnectionStringFromSQL(deviceId, function (iotHubConString) {
+                            context.log("iotHubConString: " + iotHubConString);
+                        });
+                    }
                 }
+
+                saveLastSDU(readerId,lastSDU,function(err){
+                    if(err){
+                        context.log('There was an issue saving the lastSDU back to the database');
+                    }
+                    context.log('Saved lastSDU');
+                });
+
             }
-
-            saveLastSDU(readerId,lastSDU,function(err){
-                if(err){
-                    context.log('There was an issue saving the lastSDU back to the database');
-                }
-                context.log('Saved lastSDU');
-            });
         });
     });
 
