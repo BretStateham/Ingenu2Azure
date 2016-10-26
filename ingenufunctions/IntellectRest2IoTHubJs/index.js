@@ -50,11 +50,14 @@ function getDeviceConnectionStringFromSQL(deviceId) {
 function runQuery(query) {
     var result = {};
 
+    context.log("Running query:");
+    context.log(query);
+
     var connection = new Connection(sqlConfig);
     connection.on('connect', function (err) {
 
         if (err) {
-            console.error("There was an error connecting to the database: " + err);
+            context.log("There was an error connecting to the database: " + err);
             result.error = err;
             return result;
         }
@@ -71,6 +74,7 @@ function runQuery(query) {
             });
 
         sqlRequest.on('doneInProc', function (rowCount, more, rows) {
+            context.log("Rows returned: " + rowCount);
             result.rows = rows;
             context.log(JSON.stringify(rows));
             context.log(JSON.stringify(result));
