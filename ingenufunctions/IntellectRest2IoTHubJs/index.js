@@ -228,13 +228,12 @@ module.exports = function (ctx, timerTrigger) {
 
                     context.log("nodeId: " + datagramUplinkEvent.nodeId);
                     context.log("payload: " + datagramUplinkEvent.payload );
+                    var deviceId = datagramUplinkEvent.nodeId;
 
                     getDeviceConnectionStringFromSQL(deviceId, function (iotHubConString) {
                         context.log("iotHubConString: " + iotHubConString);
                     });
-
                 }
-                
             }
 
             saveLastSDU(readerId,lastSDU,function(){
