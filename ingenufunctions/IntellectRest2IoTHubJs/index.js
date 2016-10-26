@@ -17,6 +17,9 @@ var Connection = require('tedious').Connection;
 var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
 
+/** https is used to access the Intellect REST API */
+var https = require('https');
+
 // ----------------------------------------------------------------------
 // Module level declarations
 // ----------------------------------------------------------------------
