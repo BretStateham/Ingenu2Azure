@@ -84,6 +84,8 @@ function executeRequest(sqlRequest) {
             context.log("rowCount: " + rowCount);
             context.log("rows:\n" + JSON.stringify(rows));
             result.rows = rows;
+            context.log("Result 1: ");
+            context.log(result);   
             connection.close();
             return result;
         });
