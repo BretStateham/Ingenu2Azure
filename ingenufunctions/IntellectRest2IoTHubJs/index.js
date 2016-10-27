@@ -44,36 +44,53 @@ var sqlConfig = {
     }
 };
 
+/** Used to cache IoT Hub Device Connection Strings retrieved from SQL */
+var iotHubConnectionStrings = {};
+
 // ----------------------------------------------------------------------
 // Functions
 // ----------------------------------------------------------------------
 
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
 function getDeviceConnectionStringFromSQL(deviceId, callback) {
-    var query = "SELECT primaryConnectionString from dbo.IoTHubDevices WHERE deviceId = @deviceId";
-    var sqlRequest = new Request(query,
-        function (err) {
+    var primaryConnectionString = "";
+
+    //If we don't already have the iot hub device connection string cached for the given deviceId
+    if(!iotHubConnectionStrings[deviceId]){
+        //Get it from the Azure SQL Database...
+        context.log("Retrieving IoT Hub Device Connection String for " + deviceId + " from the SQL database.");
+        var query = "SELECT primaryConnectionString from dbo.IoTHubDevices WHERE deviceId = @deviceId";
+        var sqlRequest = new Request(query,
+            function (err) {
+                if (err) {
+                    context.log('An error occurred when executing the sql request:\n' + err);
+                    result.error = err;
+                    return result;
+                }
+            });
+        sqlRequest.addParameter("deviceId", TYPES.NVarChar, deviceId)
+        executeRequest(sqlRequest, function (err, rowCount, rows) {
             if (err) {
-                context.log('An error occurred when executing the sql request:\n' + err);
-                result.error = err;
-                return result;
+                context.log('There was an error retrieving the IoT Hub Device ID:\n' + err);
+                return null;
             }
+            primaryConnectionString = rows[0][0].value;
+            context.log("primaryConnectionString: " + primaryConnectionString);
+            sqlRequest = null;
         });
-    sqlRequest.addParameter("deviceId", TYPES.NVarChar, deviceId)
-    executeRequest(sqlRequest, function (err, rowCount, rows) {
-        if (err) {
-            context.log('There was an error retrieving the IoT Hub Device ID:\n' + err);
-            return null;
-        }
-        var primaryConnectionString = rows[0][0].value;
-        context.log("primaryConnectionString: " + primaryConnectionString);
-        sqlRequest = null;
-        callback(primaryConnectionString);
-    });
+    } else {
+        //Otherwise, retrieve it from the cache
+        context.log("Retrieving Cached IoT Hub Device Connection String for " + deviceId);
+        primaryConnectionString = iotHubConnectionStrings[deviceId];
+    }
+    //And send it back to the callback
+    callback(primaryConnectionString);
+
 }
 
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
 function getLastSDU(readerId, callback) {
+    
     var query = "SELECT lastSDU from dbo.lastSDUs WHERE readerId = @readerId";
     var sqlRequest = new Request(query,
         function (err) {
@@ -279,12 +296,15 @@ module.exports = function (ctx, timerTrigger) {
                         // putting it here makes sure it gets done, even if it means 
                         // failed messages don't get re-processed...
                         lastSDU = uplink.messageId;
-                        saveLastSDU(readerId,lastSDU,function(err){
-                            if(err){
-                                context.log('There was an issue saving the lastSDU back to the database');
-                            }
-                            context.log('Saved lastSDU');
-                        });
+                        //Only save it if this is the last one in the batch.  Trying to cut down number of sql connections.
+                        if(u = uplinks.length - 1){
+                            saveLastSDU(readerId,lastSDU,function(err){
+                                if(err){
+                                    context.log('There was an issue saving the lastSDU back to the database');
+                                }
+                                context.log('Saved lastSDU');
+                            });
+                        }
 
 
                         if(uplink.messageType == "DatagramUplinkEvent"){
