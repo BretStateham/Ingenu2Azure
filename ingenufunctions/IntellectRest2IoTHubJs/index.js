@@ -31,6 +31,8 @@ var Message = require('azure-iot-device').Message;
 
 var context;  //This will be a reference to the function's context
 
+// set to false to stop excessive context.log messages
+var debug = true;
 
 /** sqlConfig stores the SQL Database Connection Details */
 var sqlConfig = {
@@ -51,6 +53,12 @@ var iotHubConnectionStrings = {};
 // Functions
 // ----------------------------------------------------------------------
 
+function debugMessage(message){
+    if(debug){
+        context.log(message);
+    }
+}
+
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
 function getDeviceConnectionStringFromSQL(deviceId, callback) {
     var primaryConnectionString = "";
@@ -58,7 +66,7 @@ function getDeviceConnectionStringFromSQL(deviceId, callback) {
     //If we don't already have the iot hub device connection string cached for the given deviceId
     if(!iotHubConnectionStrings[deviceId]){
         //Get it from the Azure SQL Database...
-        context.log("Retrieving IoT Hub Device Connection String for " + deviceId + " from the SQL database.");
+        debugMessage("Retrieving IoT Hub Device Connection String for " + deviceId + " from the SQL database.");
         var query = "SELECT primaryConnectionString from dbo.IoTHubDevices WHERE deviceId = @deviceId";
         var sqlRequest = new Request(query,
             function (err) {
@@ -77,15 +85,15 @@ function getDeviceConnectionStringFromSQL(deviceId, callback) {
             primaryConnectionString = rows[0][0].value;
             iotHubConnectionStrings[deviceId] = primaryConnectionString;
             sqlRequest = null;
-            context.log("primaryConnectionString: " + primaryConnectionString);
+            debugMessage("primaryConnectionString: " + primaryConnectionString);
             callback(primaryConnectionString);
         });
     } else {
         //Otherwise, retrieve it from the cache
-        context.log("Retrieving Cached IoT Hub Device Connection String for " + deviceId);
+        debugMessage("Retrieving Cached IoT Hub Device Connection String for " + deviceId);
         //And send it back to the callback
         primaryConnectionString = iotHubConnectionStrings[deviceId];
-        context.log("primaryConnectionString: " + primaryConnectionString);
+        debugMessage("primaryConnectionString: " + primaryConnectionString);
         callback(primaryConnectionString);
     }
 
@@ -110,7 +118,7 @@ function getLastSDU(readerId, callback) {
             return null;
         }
         var lastSDU = rows[0][0].value;
-        context.log("lastSDU: " + lastSDU);
+        debugMessage("lastSDU: " + lastSDU);
         sqlRequest = null;
         callback(lastSDU);
     });
@@ -118,7 +126,7 @@ function getLastSDU(readerId, callback) {
 
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
 function saveLastSDU(readerId, lastSDU, callback) {
-    context.log(readerId + " is saving the lastSDU: " + lastSDU);
+    debugMessage(readerId + " is saving the lastSDU: " + lastSDU);
     var query = "UPDATE dbo.lastSDUs SET lastSDU = @lastSDU WHERE readerId = @readerId;"
     var sqlRequest = new Request(query,
         function (err) {
@@ -153,7 +161,7 @@ function executeRequest(sqlRequest, callback) {
             callback(err, null, null);
         }
         // If no error, then good to proceed.  
-        context.log("Connected to sql database");
+        debugMessage("Connected to sql database");
 
         sqlRequest.on('doneInProc', function (rowCount, more, rows) {
             connection.close();
@@ -227,11 +235,11 @@ function parsePayload(payload){
     result.type = msgtype;
     switch(msgtype){
         case "08": //Alarm
-            context.log("\n!!!!!!!!!! - Alarm message received\n")
+            debugMessage("\n!!!!!!!!!! - Alarm message received\n")
             //Not going to bother parsing the alarm data at this time.
             break;
         case "07": //Serial
-            context.log("\n!!!!!!!!!! - Serial message received\n")
+            debugMessage("\n!!!!!!!!!! - Serial message received\n")
             //extract the sensor values from the string.  
             //Not a great practice, but I'm assuming the first one is temperature in Farenheit
             //And the second one is Relative Humidity %
@@ -244,7 +252,7 @@ function parsePayload(payload){
             result.humidity = parseFloat(sensors[1])
             break;
         default: //Unknown
-            context.log("\n!!!!!!!!!! - Unknown message received\n")
+            debugMessage("\n!!!!!!!!!! - Unknown message received\n")
             break;
     }
     
@@ -265,33 +273,33 @@ module.exports = function (ctx, timerTrigger) {
     var timeStamp = new Date().toISOString();
 
     if (timerTrigger.isPastDue) {
-        context.log('Node.js is running late!');
+        debugMessage('Node.js is running late!');
     }
 
     getLastSDU(readerId, function (lastSDU) {
 
         getNextUplinks(lastSDU, 5, function (data) {
 
-            context.log("Data Retrieved: ");
-            context.log(JSON.stringify(data));
+            debugMessage("Data Retrieved: ");
+            debugMessage(JSON.stringify(data));
 
-            context.log("Uplinks:");
-            context.log(JSON.stringify(data.uplinks));
+            debugMessage("Uplinks:");
+            debugMessage(JSON.stringify(data.uplinks));
             
-            context.log("lastSDU: " + lastSDU);
+            debugMessage("lastSDU: " + lastSDU);
             var uplinks = data.uplinks ? data.uplinks : null;
 
             if(uplinks && uplinks.length > 0){
 
-                context.log("Uplinks retrieved: " + uplinks.length);
+                debugMessage("Uplinks retrieved: " + uplinks.length);
 
                 for(var u = 0; u < uplinks.length; u++){
 
                     var uplink = uplinks[u];
 
-                    context.log("Processing uplink: " + u);
-                    context.log("messageType: " + uplink.messageType);
-                    context.log(JSON.stringify(uplink));
+                    debugMessage("Processing uplink: " + u);
+                    debugMessage("messageType: " + uplink.messageType);
+                    debugMessage(JSON.stringify(uplink));
 
                     if(uplink){
                         // Get the messageId, and save it as the lastSDU processed.
@@ -305,7 +313,7 @@ module.exports = function (ctx, timerTrigger) {
                                 if(err){
                                     context.log('There was an issue saving the lastSDU back to the database');
                                 }
-                                context.log('Saved lastSDU');
+                                debugMessage('Saved lastSDU');
                             });
                         }
 
@@ -318,18 +326,18 @@ module.exports = function (ctx, timerTrigger) {
 
                                 var timestamp = datagramUplinkEvent.timestamp;
                                 var timestampDate = new Date(timestamp);
-                                context.log("timestamp: " + timestamp);
-                                context.log("timestampDate: " + timestampDate);
+                                debugMessage("timestamp: " + timestamp);
+                                debugMessage("timestampDate: " + timestampDate);
 
-                                context.log("nodeId: " + datagramUplinkEvent.nodeId);
-                                context.log("payload: " + datagramUplinkEvent.payload );
+                                debugMessage("nodeId: " + datagramUplinkEvent.nodeId);
+                                debugMessage("payload: " + datagramUplinkEvent.payload );
                                 var deviceId = datagramUplinkEvent.nodeId;
 
                                 var payload = parsePayload(datagramUplinkEvent.payload);
-                                context.log("payload: " + JSON.stringify(payload));
+                                debugMessage("payload: " + JSON.stringify(payload));
 
                                 getDeviceConnectionStringFromSQL(deviceId, function (iotHubConString) {
-                                    context.log("iotHubConString: " + iotHubConString);
+                                    debugMessage("iotHubConString: " + iotHubConString);
                                     
                                     var iotHubClient = clientFromConnectionString(iotHubConString);
 
@@ -337,7 +345,7 @@ module.exports = function (ctx, timerTrigger) {
                                         if (err) {
                                             context.log('Could not connect to IoT Hub: ' + err);
                                         } else {
-                                            context.log('Connected to IoT Hub');
+                                            debugMessage('Connected to IoT Hub');
                                             var msgpaylod = {
                                                 deviceId: deviceId,
                                                 messageId: lastSDU,
@@ -347,10 +355,10 @@ module.exports = function (ctx, timerTrigger) {
 
                                             var message = new Message(JSON.stringify(msgpaylod));
 
-                                            context.log("Sending message: " + message.getData());
+                                            debugMessage("Sending message: " + message.getData());
                                             iotHubClient.sendEvent(message, function(err,res){
                                                 if (err) context.log('IoT Hub send error: ' + err.toString());
-                                                if (res) context.log('IoT Hub send status: ' + res.constructor.name);
+                                                if (res) debugMessage('IoT Hub send status: ' + res.constructor.name);
                                             });
                                         }
                                     });
@@ -367,7 +375,7 @@ module.exports = function (ctx, timerTrigger) {
         });
     });
 
-    context.log('Node.js timer trigger function ran!', timeStamp);
+    debugMessage('Node.js timer trigger function ran!', timeStamp);
 
     context.done();
 };
