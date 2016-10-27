@@ -89,7 +89,6 @@ function getDeviceConnectionStringFromSQL(deviceId, callback) {
         callback(primaryConnectionString);
     }
 
-
 }
 
 /** Retrieve's an Azure IoT Hub Device Connection String from the SQL Database assuming it exists.  ' */
