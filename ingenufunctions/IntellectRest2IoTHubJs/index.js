@@ -261,12 +261,18 @@ module.exports = function (ctx, timerTrigger) {
             context.log("lastSDU: " + lastSDU);
             var uplinks = data.uplinks ? data.uplinks : null;
 
-            if(uplinks){
+            if(uplinks && uplinks.length > 0){
+
+                context.log("Uplinks retrieved: " + uplinks.length);
 
                 for(var u = 0; u < uplinks.length; u++){
 
                     var uplink = uplinks[u];
+
+                    context.log("Processing uplink: " + u);
                     context.log("messageType: " + uplink.messageType);
+                    context.log(JSON.stringify(uplink));
+
                     if(uplink){
                         // Get the messageId, and save it as the lastSDU processed.
                         // Really, I shouldn't do this until I know I've processed it, but
