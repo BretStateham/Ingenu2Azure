@@ -250,7 +250,7 @@ module.exports = function (ctx, timerTrigger) {
 
     getLastSDU(readerId, function (lastSDU) {
 
-        getNextUplinks(lastSDU, 1, function (data) {
+        getNextUplinks(lastSDU, 10, function (data) {
 
             context.log("Data Retrieved: ");
             context.log(JSON.stringify(data));
@@ -309,11 +309,6 @@ module.exports = function (ctx, timerTrigger) {
                                             context.log('Could not connect to IoT Hub: ' + err);
                                         } else {
                                             context.log('Connected to IoT Hub');
-
-                                            //var windSpeed = 10 + (Math.random() * 4);
-                                            //var data = JSON.stringify({ deviceId: 'myFirstNodeDevice', windSpeed: windSpeed });
-                                            //var message = new Message(data);
-
                                             var msgpaylod = {
                                                 deviceId: deviceId,
                                                 timestamp: timestampDate.toISOString(),
