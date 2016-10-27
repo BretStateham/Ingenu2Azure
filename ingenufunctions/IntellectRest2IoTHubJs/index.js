@@ -308,7 +308,7 @@ module.exports = function (ctx, timerTrigger) {
                         // failed messages don't get re-processed...
                         lastSDU = uplink.messageId;
                         //Only save it if this is the last one in the batch.  Trying to cut down number of sql connections.
-                        if(u = uplinks.length - 1){
+                        if(u == uplinks.length - 1){
                             saveLastSDU(readerId,lastSDU,function(err){
                                 if(err){
                                     context.log('There was an issue saving the lastSDU back to the database');
