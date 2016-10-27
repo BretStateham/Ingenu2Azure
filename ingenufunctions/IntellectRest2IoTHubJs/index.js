@@ -76,6 +76,7 @@ function getDeviceConnectionStringFromSQL(deviceId, callback) {
             }
             primaryConnectionString = rows[0][0].value;
             context.log("primaryConnectionString: " + primaryConnectionString);
+            iotHubConnectionStrings[deviceId] = primaryConnectionString;
             sqlRequest = null;
         });
     } else {
@@ -84,6 +85,7 @@ function getDeviceConnectionStringFromSQL(deviceId, callback) {
         primaryConnectionString = iotHubConnectionStrings[deviceId];
     }
     //And send it back to the callback
+    context.log("primaryConnectionString: " + primaryConnectionString);
     callback(primaryConnectionString);
 
 }
