@@ -75,18 +75,20 @@ function getDeviceConnectionStringFromSQL(deviceId, callback) {
                 return null;
             }
             primaryConnectionString = rows[0][0].value;
-            context.log("primaryConnectionString: " + primaryConnectionString);
             iotHubConnectionStrings[deviceId] = primaryConnectionString;
             sqlRequest = null;
+            context.log("primaryConnectionString: " + primaryConnectionString);
+            callback(primaryConnectionString);
         });
     } else {
         //Otherwise, retrieve it from the cache
         context.log("Retrieving Cached IoT Hub Device Connection String for " + deviceId);
+        //And send it back to the callback
+        context.log("primaryConnectionString: " + primaryConnectionString);
         primaryConnectionString = iotHubConnectionStrings[deviceId];
+        callback(primaryConnectionString);
     }
-    //And send it back to the callback
-    context.log("primaryConnectionString: " + primaryConnectionString);
-    callback(primaryConnectionString);
+
 
 }
 
