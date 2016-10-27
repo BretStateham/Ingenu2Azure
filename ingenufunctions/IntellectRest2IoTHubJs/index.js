@@ -302,7 +302,7 @@ module.exports = function (ctx, timerTrigger) {
                                 getDeviceConnectionStringFromSQL(deviceId, function (iotHubConString) {
                                     context.log("iotHubConString: " + iotHubConString);
                                     
-                                    var iotHubClient = clientFromConnectionString(connectionString);
+                                    var iotHubClient = clientFromConnectionString(iotHubConString);
 
                                     iotHubClient.open(function(err){
                                         if (err) {
