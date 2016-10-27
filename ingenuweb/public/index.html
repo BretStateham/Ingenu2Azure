@@ -74,7 +74,7 @@
                                     <td style="text-align:center">&nbsp;<span class="glyphicon glyphicon-flash"></span></button></td>
                                     <td style="text-align:left">{{ m.deviceid }}</td>
                                     <td style="text-align:right">{{ m.timestamp | date : 'short' }}</td>
-                                    <td style="text-align:right">{{ m.temperature | number }}&deg;C</td>
+                                    <td style="text-align:right">{{ m.temperature | number }}&deg;F</td>
                                 </tr>
                             </tbody>
                         </table> 
@@ -113,7 +113,7 @@
                         <tr ng-repeat="m in recentMeasurements">
                             <td style="text-align:left">{{ m.deviceid }}</td>
                             <td style="text-align:right">{{ m.timestamp | date : 'short' }}</td>
-                            <td style="text-align:right">{{ m.temperature | number }}&deg;C</td>
+                            <td style="text-align:right">{{ m.temperature | number }}&deg;F</td>
                         </tr>
                     </tbody>
                 </table> 
