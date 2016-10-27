@@ -180,7 +180,7 @@ function getNextUplinks(lastSDU, count, callback) {
     });
 
     req.on('error', function (e) {
-        console.error(e);
+        context.log("https request error: " + e);
     })
 
     req.end();
@@ -324,7 +324,7 @@ module.exports = function (ctx, timerTrigger) {
 
                                             var message = new Message(JSON.stringify(msgpaylod));
 
-                                            console.log("Sending message: " + message.getData());
+                                            context.log("Sending message: " + message.getData());
                                             iotHubClient.sendEvent(message, function(err,res){
                                                 if (err) context.log('IoT Hub send error: ' + err.toString());
                                                 if (res) context.log('IoT Hub send status: ' + res.constructor.name);
