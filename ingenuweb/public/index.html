@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Microsoft / Intel IoT Camp</title>
+    <title>Ingenu RPMA to Azure IoT Hub Demo</title>
     <meta charset="utf-8" />
     <meta http-equiv="refresh" content="30">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -39,7 +39,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#/">Microsoft / Intel IoT Camp</a>
+                <a class="navbar-brand" href="#/">Ingenu RPMA to Azure IoT Hub Demo</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -70,7 +70,8 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="m in devices">
-                                    <td style="text-align:center"><button type="button" class="btn btn-xs btn-success" style="padding: 0px 2px;" ng-click="testBuzzer(m.deviceid)"><span class="glyphicon glyphicon-flash"></span></button></td>
+                                    <!--<td style="text-align:center"><button type="button" class="btn btn-xs btn-success" style="padding: 0px 2px;" ng-click="testBuzzer(m.deviceid)"><span class="glyphicon glyphicon-flash"></span></button></td>-->
+                                    <td style="text-align:center">&nbsp;<span class="glyphicon glyphicon-flash"></span></button></td>
                                     <td style="text-align:left">{{ m.deviceid }}</td>
                                     <td style="text-align:right">{{ m.timestamp | date : 'short' }}</td>
                                     <td style="text-align:right">{{ m.temperature | number }}&deg;C</td>
