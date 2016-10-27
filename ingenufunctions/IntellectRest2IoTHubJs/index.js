@@ -84,8 +84,8 @@ function getDeviceConnectionStringFromSQL(deviceId, callback) {
         //Otherwise, retrieve it from the cache
         context.log("Retrieving Cached IoT Hub Device Connection String for " + deviceId);
         //And send it back to the callback
-        context.log("primaryConnectionString: " + primaryConnectionString);
         primaryConnectionString = iotHubConnectionStrings[deviceId];
+        context.log("primaryConnectionString: " + primaryConnectionString);
         callback(primaryConnectionString);
     }
 
