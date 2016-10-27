@@ -291,7 +291,7 @@ module.exports = function (ctx, timerTrigger) {
                                 var deviceId = datagramUplinkEvent.nodeId;
 
                                 var payload = parsePayload(datagramUplinkEvent.payload);
-                                context.log("payload: " + payload);
+                                context.log("payload: " + JSON.stringify(payload));
 
                                 getDeviceConnectionStringFromSQL(deviceId, function (iotHubConString) {
                                     context.log("iotHubConString: " + iotHubConString);
