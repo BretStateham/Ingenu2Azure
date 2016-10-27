@@ -278,7 +278,7 @@ module.exports = function (ctx, timerTrigger) {
 
     getLastSDU(readerId, function (lastSDU) {
 
-        getNextUplinks(lastSDU, 5, function (data) {
+        getNextUplinks(lastSDU, 1, function (data) {
 
             debugMessage("Data Retrieved: ");
             debugMessage(JSON.stringify(data));
