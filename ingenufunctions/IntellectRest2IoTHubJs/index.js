@@ -250,7 +250,7 @@ module.exports = function (ctx, timerTrigger) {
 
     getLastSDU(readerId, function (lastSDU) {
 
-        getNextUplinks(lastSDU, 10, function (data) {
+        getNextUplinks(lastSDU, 5, function (data) {
 
             context.log("Data Retrieved: ");
             context.log(JSON.stringify(data));
