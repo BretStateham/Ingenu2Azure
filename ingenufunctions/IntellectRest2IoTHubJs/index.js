@@ -1,3 +1,4 @@
+'use strict';
 // ======================================================================
 // IntellectRest2IoTHubJs
 // 
@@ -19,6 +20,10 @@ var TYPES = require('tedious').TYPES;
 
 /** https is used to access the Intellect REST API */
 var https = require('https');
+
+/** azure-iot requires  */
+var clientFromConnectionString = require('azure-iot-device-amqp').clientFromConnectionString;
+var Message = require('azure-iot-device').Message;
 
 // ----------------------------------------------------------------------
 // Module level declarations
@@ -295,6 +300,35 @@ module.exports = function (ctx, timerTrigger) {
 
                                 getDeviceConnectionStringFromSQL(deviceId, function (iotHubConString) {
                                     context.log("iotHubConString: " + iotHubConString);
+                                    
+                                    var iotHubClient = clientFromConnectionString(connectionString);
+
+                                    iotHubClient.open(function(err){
+                                        if (err) {
+                                            context.log('Could not connect to IoT Hub: ' + err);
+                                        } else {
+                                            context.log('Connected to IoT Hub');
+
+                                            //var windSpeed = 10 + (Math.random() * 4);
+                                            //var data = JSON.stringify({ deviceId: 'myFirstNodeDevice', windSpeed: windSpeed });
+                                            //var message = new Message(data);
+
+                                            var msgpaylod = {
+                                                deviceId: deviceId,
+                                                timestamp: timestampDate.toISOString(),
+                                                temperature: payload.temperature
+                                            };
+
+                                            var message = new Message(JSON.stringify(msgpaylod));
+
+                                            console.log("Sending message: " + message.getData());
+                                            iotHubClient.sendEvent(message, function(err,res){
+                                                if (err) context.log('IoT Hub send error: ' + err.toString());
+                                                if (res) context.log('IoT Hub send status: ' + res.constructor.name);
+                                            });
+                                        }
+                                    });
+
                                 });
                                 
                             }

@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "azure-iot-device": "^1.0.16",
+    "azure-iot-device-amqp": "^1.0.16",
     "tedious": "^1.14.0"
   },
   "devDependencies": {},
