@@ -311,6 +311,7 @@ module.exports = function (ctx, timerTrigger) {
                                             context.log('Connected to IoT Hub');
                                             var msgpaylod = {
                                                 deviceId: deviceId,
+                                                messageId: lastSDU,
                                                 timestamp: timestampDate.toISOString(),
                                                 temperature: payload.temperature
                                             };
