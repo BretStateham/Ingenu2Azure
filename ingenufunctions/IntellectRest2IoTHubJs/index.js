@@ -249,6 +249,7 @@ module.exports = function (ctx, timerTrigger) {
     }
 
     getLastSDU(readerId, function (lastSDU) {
+
         getNextUplinks(lastSDU, 1, function (data) {
 
             context.log("Data Retrieved: ");
@@ -258,7 +259,7 @@ module.exports = function (ctx, timerTrigger) {
             context.log(JSON.stringify(data.uplinks));
             
             context.log("lastSDU: " + lastSDU);
-            uplinks = data.uplinks ? data.uplinks : null;
+            var uplinks = data.uplinks ? data.uplinks : null;
 
             if(uplinks){
 
