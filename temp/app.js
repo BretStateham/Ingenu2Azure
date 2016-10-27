@@ -107,15 +107,6 @@ function parsePayload(payload){
             break;
     }
     
-    // console.log("hex:  " + hex);
-    // console.log("type: " + msgtype);
-    // console.log("body: " + bodyhex);
-    // console.log("text: " + bodytext);
-
-    // for(var i = 0; i < sensorvalues.length; i++){
-    //     console.log("  Sensor Value: " + parseFloat(sensorvalues[i]));
-    // }
-
     return result;
 
 }

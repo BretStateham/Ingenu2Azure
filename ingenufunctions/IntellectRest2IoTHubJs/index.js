@@ -181,6 +181,44 @@ function getNextUplinks(lastSDU, count, callback) {
     req.end();
 }
 
+function parsePayload(payload){
+
+// //var payload = "Bw0ACjc1LjIwXzE5LjAwAA==";
+    var result = {};
+
+    var payloadhex = Buffer.from(payload,'base64').toString('hex');
+
+    var startpos = 8;
+    var trimlen = 2;
+    var msgtype = payloadhex.substr(0,2);
+    result.type = msgtype;
+    switch(msgtype){
+        case "08": //Alarm
+            context.log("\n!!!!!!!!!! - Alarm message received\n")
+            //Not going to bother parsing the alarm data at this time.
+            break;
+        case "07": //Serial
+            context.log("\n!!!!!!!!!! - Serial message received\n")
+            //extract the sensor values from the string.  
+            //Not a great practice, but I'm assuming the first one is temperature in Farenheit
+            //And the second one is Relative Humidity %
+            var bodyhex = payloadhex.substr(8,payloadhex.length-(startpos+trimlen));
+            var bodytext = hex2a(bodyhex);
+            var sensors = bodytext.split('_');
+            result.bodyHex = bodyhex;
+            result.bodyText = bodytext;
+            result.temperature = parseFloat(sensors[0]);
+            result.humidity = parseFloat(sensors[1])
+            break;
+        default: //Unknown
+            context.log("\n!!!!!!!!!! - Unknown message received\n")
+            break;
+    }
+    
+    return result;
+
+}
+
 
 // ----------------------------------------------------------------------
 // Main
@@ -233,20 +271,27 @@ module.exports = function (ctx, timerTrigger) {
 
                             var datagramUplinkEvent = uplink.datagramUplinkEvent;
 
-                            var timestamp = datagramUplinkEvent.timestamp;
-                            var timestampDate = new Date(timestamp);
-                            context.log("timestamp: " + timestamp);
-                            context.log("timestampDate: " + timestampDate);
+                            if(datagramUplinkEvent){
 
-                            context.log("nodeId: " + datagramUplinkEvent.nodeId);
-                            context.log("payload: " + datagramUplinkEvent.payload );
-                            var deviceId = datagramUplinkEvent.nodeId;
+                                var timestamp = datagramUplinkEvent.timestamp;
+                                var timestampDate = new Date(timestamp);
+                                context.log("timestamp: " + timestamp);
+                                context.log("timestampDate: " + timestampDate);
 
-                            
+                                context.log("nodeId: " + datagramUplinkEvent.nodeId);
+                                context.log("payload: " + datagramUplinkEvent.payload );
+                                var deviceId = datagramUplinkEvent.nodeId;
 
-                            getDeviceConnectionStringFromSQL(deviceId, function (iotHubConString) {
-                                context.log("iotHubConString: " + iotHubConString);
-                            });
+                                var payload = parsePayload(datagramUplinkEvent.payload);
+                                context.log("payload: " + payload);
+
+                                getDeviceConnectionStringFromSQL(deviceId, function (iotHubConString) {
+                                    context.log("iotHubConString: " + iotHubConString);
+                                });
+                                
+                            }
+
+
                         }
                     }
                 }
