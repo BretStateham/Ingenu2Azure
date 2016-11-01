@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="105.4114mm"
+   height="145.17035mm"
+   viewBox="0 0 373.50496 514.38312"
+   id="svg7122"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="Ethertronics Logo Only.svg">
+  <defs
+     id="defs7124" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="680.45868"
+     inkscape:cy="-329.95129"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7127">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(742.60154,311.97222)">
+    <path
+       style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m -696.24551,-307.12196 c -25.67643,-11.9949 -46.35603,-0.98634 -46.35603,24.6901 l 0,280.8139847 c 0,25.6764323 20.6796,56.0059763 46.35603,68.0008723 l 113.13316,52.850713 0,-75.685717 a 144.33336,90.84168 51.573634 0 1 -87.24041,-151.821473 144.33336,90.84168 51.573634 0 1 114.5037,-61.01283 144.33336,90.84168 51.573634 0 1 111.08795,139.135534 l 75.66453,35.3470905 0,-113.1437545 c 0,-25.67643 -20.66901,-56.00106 -46.34544,-67.99596 L -696.24551,-307.12196 Z M -444.7717,24.370877 a 144.33336,90.84168 51.573634 0 1 -83.81407,44.670621 l 0,75.664532 113.14375,52.85554 c 25.67643,11.99489 46.34544,0.98141 46.34544,-24.69502 l 0,-113.143664 -75.67512,-35.352009 z"
+       id="rect7104"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>
