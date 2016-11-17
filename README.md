@@ -12,4 +12,4 @@ The code in this project is an example of how you can consume device message dat
 - [Azure Web Apps](https://azure.microsoft.com/en-us/services/app-service/web/)
 - [Azure Power BI Embedded](https://azure.microsoft.com/en-us/services/power-bi-embedded/)
 
-![Ingenu 2 Azure Architecture](docs/images/Ingenu2AzureArchitectureDiagramPortrait.jpg)
+![Ingenu 2 Azure Architecture](docs/images/FullArchitectureStackOnly.png)
