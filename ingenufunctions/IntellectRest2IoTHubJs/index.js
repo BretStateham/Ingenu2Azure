@@ -233,6 +233,7 @@ function parsePayload(payload){
     var trimlen = 2;
     var msgtype = payloadhex.substr(0,2);
     result.type = msgtype;
+    result.payloadHex = payloadhex;
     switch(msgtype){
         case "08": //Alarm
             debugMessage("\n!!!!!!!!!! - Alarm message received\n")
