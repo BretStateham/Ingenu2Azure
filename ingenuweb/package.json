@@ -19,7 +19,7 @@
     "express": "^4.13.4",
     "nconf": "^0.8.4",
     "powerbi-api": "^1.0.1",
-    "tedious": "^1.14.0",
+    "tedious": "1.14.0",
     "tedious-connection-pool": "^1.0.5"
   }
 }
