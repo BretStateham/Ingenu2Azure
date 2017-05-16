@@ -77,7 +77,7 @@ module.exports = function (context, myEventHubTrigger) {
 
     sendDownlink(context,tagid,nodeid,"0301870010");
 
-    sendDownlink(context,tagid,nodeid,"071b0003018700100a");
+    sendDownlink(context,tagid,nodeid,"071b00414c4552540a");
 
     context.done();
 };
