@@ -75,9 +75,9 @@ module.exports = function (context, myEventHubTrigger) {
     var nodeid = myEventHubTrigger ?  myEventHubTrigger.deviceid : "0x00072d97";
     var tagid = myEventHubTrigger ? myEventHubTrigger.messageid : uuid.v4();
 
-    sendDownlink(context,tagid,nodeid,"0301870010");
+    sendDownlink(context,tagid,nodeid,"071b00414c4552540a");
 
-    //sendDownlink(context,tagid,nodeid,"071b00414c4552540a");
+    sendDownlink(context,tagid,nodeid,"0301870010");
 
     context.done();
 };
