@@ -75,8 +75,9 @@ module.exports = function (context, myEventHubTrigger) {
     var nodeid = myEventHubTrigger ?  myEventHubTrigger.deviceid : "0x00072d97";
     var tagid = myEventHubTrigger ? myEventHubTrigger.messageid : uuid.v4();
 
+    // Send serial message to arduino
     // 07 = Serial Message to arduino, 06 = payload length in bytes, 00 = NULL, 41 4c 45 52 54 = ALERT, 0a = linefeed.
-    sendDownlink(context,tagid,nodeid,"070600414c4552540a");
+    //sendDownlink(context,tagid,nodeid,"070600414c4552540a");
 
     // LED Light Show message to RACM.  Should cause LED to flash on the RACM
     sendDownlink(context,tagid,nodeid,"0301870010");
