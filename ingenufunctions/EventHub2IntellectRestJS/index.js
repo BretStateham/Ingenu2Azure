@@ -25,7 +25,7 @@ function GetEnvironmentVariable(name) {
     return process.env[name];
 }
 
-function sendDownlink(tagid, nodeid, payload){
+function sendDownlink(context, tagid, nodeid, payload){
     var post_data = "<downlink xmlns='http://www.ingenu.com/data/v1/schema'><datagramDownlinkRequest><tag>" + tagid + "</tag><nodeId>" + nodeid + "</nodeId><payload>" + payload + "</payload></datagramDownlinkRequest></downlink>";
     context.log("Sending\n" + post_data);
 
@@ -75,9 +75,9 @@ module.exports = function (context, myEventHubTrigger) {
     var nodeid = myEventHubTrigger ?  myEventHubTrigger.deviceid : "0x00072d97";
     var tagid = myEventHubTrigger ? myEventHubTrigger.messageid : uuid.v4();
 
-    sendDownlink(tagid,nodeid,"0301870010");
+    sendDownlink(context,tagid,nodeid,"0301870010");
 
-    sendDownlink(tagid,nodeid,"071b0003018700100a");
+    sendDownlink(context,tagid,nodeid,"071b0003018700100a");
 
     context.done();
 };
