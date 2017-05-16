@@ -25,16 +25,8 @@ function GetEnvironmentVariable(name) {
     return process.env[name];
 }
 
-// ----------------------------------------------------------------------
-// Main
-// ----------------------------------------------------------------------
-module.exports = function (context, myEventHubTrigger) {
-    context.log('Node.js eventhub trigger function processed work item', myEventHubTrigger);
-
-    var nodeid = myEventHubTrigger ?  myEventHubTrigger.deviceid : "0x00072d97";
-    var tagid = myEventHubTrigger ? myEventHubTrigger.messageid : uuid.v4();
-
-    var post_data = "<downlink xmlns='http://www.ingenu.com/data/v1/schema'><datagramDownlinkRequest><tag>" + tagid + "</tag><nodeId>" + nodeid + "</nodeId><payload>0301870010</payload></datagramDownlinkRequest></downlink>";
+function sendDownlink(tagid, nodeid, payload){
+    var post_data = "<downlink xmlns='http://www.ingenu.com/data/v1/schema'><datagramDownlinkRequest><tag>" + tagid + "</tag><nodeId>" + nodeid + "</nodeId><payload>" + payload + "</payload></datagramDownlinkRequest></downlink>";
     context.log("Sending\n" + post_data);
 
     var path = "/data/v1/send";
@@ -72,6 +64,20 @@ module.exports = function (context, myEventHubTrigger) {
     
     req.write(post_data);
     req.end();
+}
+
+// ----------------------------------------------------------------------
+// Main
+// ----------------------------------------------------------------------
+module.exports = function (context, myEventHubTrigger) {
+    context.log('Node.js eventhub trigger function processed work item', myEventHubTrigger);
+
+    var nodeid = myEventHubTrigger ?  myEventHubTrigger.deviceid : "0x00072d97";
+    var tagid = myEventHubTrigger ? myEventHubTrigger.messageid : uuid.v4();
+
+    sendDownlink(tagid,nodeid,"0301870010");
+
+    sendDownlink(tagid,nodeid,"071b0003018700100a");
 
     context.done();
 };

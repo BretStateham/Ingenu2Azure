@@ -25,6 +25,9 @@
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
 uint32_t delayMS;
+unsigned long lastMS;
+unsigned long currentMS;
+
 
 SoftwareSerial serial2(10, 11); // Define which digital pins we'll use for serial and give them a name
 
@@ -63,49 +66,71 @@ void setup() {
   Serial.print  ("Resolution:   "); Serial.print(sensor.resolution); Serial.println("%");  
   Serial.print  ("Min Delay:   "); Serial.print(sensor.min_delay); Serial.println("micro sec");  
   Serial.println("------------------------------------");
+  
+  
+  
   // Set delay between sensor readings based on sensor details.
   //delayMS = sensor.min_delay / 1000;
   delayMS = 30000;
+
+  lastMS = millis();
+  
 }
 
 void loop() {
   // Delay between measurements.
-  delay(delayMS);
 
-  float tempFarenheit = 0;
-  float humidityPercent = 0;
-  bool gotTemp = false;
-  bool gotHumidity = false;
+  currentMS = millis();
+
+  if (serial2.available()) {
+    Serial.write(serial2.read());
+  }
   
-  // Get temperature event and print its value.
-  sensors_event_t event;  
-  dht.temperature().getEvent(&event);
-  if (isnan(event.temperature)) {
-    Serial.println("Error reading temperature!");
-  }
-  else {
-    gotTemp = true;
-    tempFarenheit = Fahrenheit(event.temperature);
-    Serial.print("Temperature: ");
-    Serial.print(tempFarenheit);
-    Serial.println(" *F");
-  }
-  // Get humidity event and print its value.
-  dht.humidity().getEvent(&event);
-  if (isnan(event.relative_humidity)) {
-    Serial.println("Error reading humidity!");
-  }
-  else {
-    gotHumidity = true;
-    humidityPercent = (float)event.relative_humidity;
-    Serial.print("Humidity: ");
-    Serial.print(humidityPercent);
-    Serial.println("%");
-  }
+  if(currentMS - lastMS >= delayMS)
+  {
 
-  if(gotTemp && gotHumidity){
-    serial2.print(tempFarenheit, 2);
-    serial2.print("_");
-    serial2.println(humidityPercent, 2);  
+    lastMS = currentMS;
+
+    Serial.println("----------");
+    
+    float tempFarenheit = 0;
+    float humidityPercent = 0;
+    bool gotTemp = false;
+    bool gotHumidity = false;
+    
+    // Get temperature event and print its value.
+    sensors_event_t event;  
+    dht.temperature().getEvent(&event);
+    if (isnan(event.temperature)) {
+      Serial.println("Error reading temperature!");
+    }
+    else {
+      gotTemp = true;
+      tempFarenheit = Fahrenheit(event.temperature);
+      Serial.print("Temperature: ");
+      Serial.print(tempFarenheit);
+      Serial.println(" *F");
+    }
+    // Get humidity event and print its value.
+    dht.humidity().getEvent(&event);
+    if (isnan(event.relative_humidity)) {
+      Serial.println("Error reading humidity!");
+    }
+    else {
+      gotHumidity = true;
+      humidityPercent = (float)event.relative_humidity;
+      Serial.print("Humidity: ");
+      Serial.print(humidityPercent);
+      Serial.println("%");
+    }
+  
+    if(gotTemp && gotHumidity){
+      serial2.print(tempFarenheit, 2);
+      serial2.print("_");
+      serial2.println(humidityPercent, 2);  
+    }
+
+    Serial.println("----------");
+
   }
 }
