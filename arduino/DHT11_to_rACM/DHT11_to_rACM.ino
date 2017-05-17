@@ -13,6 +13,7 @@
 #include <SoftwareSerial.h>
 
 #define DHTPIN            6         // Pin which is connected to the DHT sensor.
+#define LEDPIN           13         // Used to indicate when data is being sent
 
 // Uncomment the type of sensor in use:
 #define DHTTYPE           DHT11     // DHT 11 
@@ -67,11 +68,13 @@ void setup() {
   Serial.print  ("Min Delay:   "); Serial.print(sensor.min_delay); Serial.println("micro sec");  
   Serial.println("------------------------------------");
   
-  
+  pinMode(LEDPIN,OUTPUT);
+  digitalWrite(LEDPIN,LOW);
   
   // Set delay between sensor readings based on sensor details.
   //delayMS = sensor.min_delay / 1000;
-  delayMS = 30000;
+  //delayMS = 30000;
+  delayMS = 5000;
 
   lastMS = millis();
   
@@ -88,6 +91,8 @@ void loop() {
   
   if(currentMS - lastMS >= delayMS)
   {
+
+    digitalWrite(LEDPIN,HIGH);
 
     lastMS = currentMS;
 
@@ -131,6 +136,8 @@ void loop() {
     }
 
     Serial.println("----------");
+
+    digitalWrite(LEDPIN,LOW);
 
   }
 }
