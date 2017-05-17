@@ -73,8 +73,8 @@ void setup() {
   
   // Set delay between sensor readings based on sensor details.
   //delayMS = sensor.min_delay / 1000;
-  //delayMS = 30000;
-  delayMS = 20000;
+  delayMS = 30000;
+  //delayMS = 20000;
 
   lastMS = millis();
   
